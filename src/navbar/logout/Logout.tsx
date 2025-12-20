@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const Logout = () => {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -11,6 +12,7 @@ const Logout = () => {
     setTimeout(() => {
       // Add your actual logout logic here (clear tokens, etc.)
       console.log("Logged out successfully");
+      toast.success("Logged out successfully. See you soon!");
       setIsLoggingOut(false);
       navigate("/login");
     }, 2000);
