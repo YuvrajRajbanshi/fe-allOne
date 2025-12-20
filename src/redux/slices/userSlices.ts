@@ -5,12 +5,14 @@ export interface UserState {
   isAuthenticated: boolean;
   email: string | null;
   pendingVerificationEmail: string | null;
+  resetPasswordEmail: string | null;
 }
 
 const initialState: UserState = {
   isAuthenticated: false,
   email: null,
   pendingVerificationEmail: null,
+  resetPasswordEmail: null,
 };
 
 export const userSlice = createSlice({
@@ -33,10 +35,22 @@ export const userSlice = createSlice({
     clearVerificationEmail: (state) => {
       state.pendingVerificationEmail = null;
     },
+    setResetPasswordEmail: (state, action: PayloadAction<string>) => {
+      state.resetPasswordEmail = action.payload;
+    },
+    clearResetPasswordEmail: (state) => {
+      state.resetPasswordEmail = null;
+    },
   },
 });
 
-export const { login, logout, setVerificationEmail, clearVerificationEmail } =
-  userSlice.actions;
+export const {
+  login,
+  logout,
+  setVerificationEmail,
+  clearVerificationEmail,
+  setResetPasswordEmail,
+  clearResetPasswordEmail,
+} = userSlice.actions;
 
 export default userSlice.reducer;

@@ -4,14 +4,21 @@ import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import toast from "react-hot-toast";
 import type { RootState } from "../../redux/userStore";
-import { clearVerificationEmail, login } from "../../redux/slices/userSlices";
+import { clearVerificationEmail } from "../../redux/slices/userSlices";
 
 const OtpVerification = () => {
-  const apiURL = import.meta.env.VITE_API_URL;
+  const rawApiURL = import.meta.env.VITE_API_URL as string | undefined;
+  const apiURL = (
+    typeof rawApiURL === "string" && rawApiURL.trim().length > 0
+      ? rawApiURL.trim()
+      : "https://be-allone.onrender.com"
+  ).replace(/\/+$/, "");
+
   const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
   const [isLoading, setIsLoading] = useState(false);
   const [resendTimer, setResendTimer] = useState(30);
   const [canResend, setCanResend] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -21,10 +28,10 @@ const OtpVerification = () => {
   );
 
   useEffect(() => {
-    if (!email) {
+    if (!email && !isVerified) {
       navigate("/signup");
     }
-  }, [email, navigate]);
+  }, [email, navigate, isVerified]);
 
   // Resend timer countdown
   useEffect(() => {
@@ -79,11 +86,7 @@ const OtpVerification = () => {
     setResendTimer(30);
 
     try {
-      // TODO: Backend resend-otp endpoint not implemented yet
-      // await axios.post("https://be-allone.onrender.com/api/users/resend-otp", {
-      //   email,
-      // });
-      console.log("Resend OTP requested for:", email);
+      await axios.post(`${apiURL}/api/otp/sent-otp`, { email });
       toast.success("OTP resent successfully!");
     } catch (err) {
       console.error("Resend OTP error:", err);
@@ -103,14 +106,14 @@ const OtpVerification = () => {
     setIsLoading(true);
 
     try {
-      const response = await axios.post(`${apiURL}api/users/otp-verify`, {
+      const response = await axios.post(`${apiURL}/api/users/otp-verify`, {
         email,
         otp: otpValue,
       });
       console.log("OTP verified:", response.data);
-      toast.success("Email verified successfully!");
+      toast.success("Email verified successfully! Please login.");
+      setIsVerified(true);
       dispatch(clearVerificationEmail());
-      dispatch(login(response.data));
       navigate("/login");
     } catch (err: unknown) {
       console.error("OTP verification error:", err);

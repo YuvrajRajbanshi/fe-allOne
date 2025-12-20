@@ -8,6 +8,10 @@ import Footer from "./components/Footer";
 import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
 import OtpVerification from "./pages/auth/OtpVerification";
+// import ForgotPassword from "./pages/auth/ForgotPassword";
+// import ResetPassword from "./pages/auth/ResetPassword";
+import ForgotPassword from "./pages/auth/ForgotPassword";
+import ResetPassword from "./pages/auth/ResetPassword";
 import { Toaster } from "react-hot-toast";
 
 function App() {
@@ -27,6 +31,8 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/register" element={<Signup />} />
           <Route path="/verify-otp" element={<OtpVerification />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
         </Routes>
         <Footer />
       </div>
