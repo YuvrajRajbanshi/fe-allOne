@@ -7,6 +7,7 @@ import type { RootState } from "../../redux/userStore";
 import { clearVerificationEmail, login } from "../../redux/slices/userSlices";
 
 const OtpVerification = () => {
+  const apiURL = import.meta.env.VITE_API_URL;
   const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
   const [isLoading, setIsLoading] = useState(false);
   const [resendTimer, setResendTimer] = useState(30);
@@ -102,13 +103,10 @@ const OtpVerification = () => {
     setIsLoading(true);
 
     try {
-      const response = await axios.post(
-        "https://be-allone.onrender.com/api/users/otp-verify",
-        {
-          email,
-          otp: otpValue,
-        }
-      );
+      const response = await axios.post(`${apiURL}api/users/otp-verify`, {
+        email,
+        otp: otpValue,
+      });
       console.log("OTP verified:", response.data);
       toast.success("Email verified successfully!");
       dispatch(clearVerificationEmail());

@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import { setVerificationEmail } from "../../redux/slices/userSlices";
 
 const Signup = () => {
+  const apiURL = import.meta.env.VITE_API_URL;
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -31,7 +32,7 @@ const Signup = () => {
 
     try {
       const response = await axios.post(
-        "https://be-allone.onrender.com/api/users/register",
+        `${apiURL}api/users/register`,
         formData
       );
       console.log("Server response:", response.data);
