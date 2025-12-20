@@ -6,7 +6,13 @@ import toast from "react-hot-toast";
 import { setVerificationEmail } from "../../redux/slices/userSlices";
 
 const Signup = () => {
-  const apiURL = import.meta.env.VITE_API_URL;
+  const rawApiURL = import.meta.env.VITE_API_URL as string | undefined;
+  const apiURL = (
+    typeof rawApiURL === "string" && rawApiURL.trim().length > 0
+      ? rawApiURL.trim()
+      : "https://be-allone.onrender.com"
+  ).replace(/\/+$/, "");
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -32,7 +38,7 @@ const Signup = () => {
 
     try {
       const response = await axios.post(
-        `${apiURL}api/users/register`,
+        `${apiURL}/api/users/register`,
         formData
       );
       console.log("Server response:", response.data);
@@ -41,7 +47,6 @@ const Signup = () => {
       dispatch(setVerificationEmail(formData.email));
 
       toast.success("Registration successful! Please verify your email.");
-      // Navigate to OTP verification page
       navigate("/verify-otp");
     } catch (error: unknown) {
       console.error("Registration error:", error);
@@ -309,7 +314,7 @@ const Signup = () => {
               to="/login"
               className="text-indigo-500 hover:text-indigo-600 font-semibold transition-colors duration-300"
             >
-              Sign in
+              Login In
             </Link>
           </p>
         </div>
