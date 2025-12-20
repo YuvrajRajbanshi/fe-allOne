@@ -5,6 +5,12 @@ import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { login } from "../../redux/slices/userSlices";
 const Login = () => {
+  const rawApiURL = import.meta.env.VITE_API_URL as string | undefined;
+  const apiURL = (
+    typeof rawApiURL === "string" && rawApiURL.trim().length > 0
+      ? rawApiURL.trim()
+      : "https://be-allone.onrender.com"
+  ).replace(/\/+$/, "");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -17,7 +23,8 @@ const Login = () => {
     setIsLoading(true);
     setTimeout(() => {
       axios
-        .post("https://be-allone.onrender.com/api/users/login", {
+        // .post("https://be-allone.onrender.com/api/users/login", {
+        .post(`${apiURL}/api/users/login`, {
           email,
           password,
         })
