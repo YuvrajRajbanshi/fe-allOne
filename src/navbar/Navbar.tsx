@@ -1,5 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import type { RootState } from "../redux/userStore";
+import { logout } from "../redux/slices/userSlices";
 
 const Navbar = () => {
   const location = useLocation();
@@ -7,6 +10,11 @@ const Navbar = () => {
 
   const isActive = (path: string) => location.pathname === path;
 
+  const isAuthenticate = useSelector(
+    (state: RootState) => state.user.isAuthenticated
+  );
+  console.log("Is authen", isAuthenticate);
+  const dispatch = useDispatch();
   const navLinks = [
     {
       to: "/",
@@ -30,6 +38,7 @@ const Navbar = () => {
     {
       to: "/profile",
       label: "Profile",
+      requireAuth: true,
       icon: (
         <svg
           className="w-4 h-4"
@@ -47,6 +56,10 @@ const Navbar = () => {
       ),
     },
   ];
+
+  const visibleNavLinks = navLinks.filter(
+    (link) => !("requireAuth" in link) || !link.requireAuth || isAuthenticate
+  );
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
@@ -70,7 +83,7 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-1">
-            {navLinks.map((link) => (
+            {visibleNavLinks.map((link) => (
               <Link
                 key={link.to}
                 to={link.to}
@@ -86,25 +99,31 @@ const Navbar = () => {
             ))}
 
             {/* Logout Button */}
-            <Link
-              to="/logout"
-              className="ml-2 flex items-center gap-2 px-5 py-2 bg-linear-to-r from-indigo-500 to-purple-600 text-white text-sm font-medium rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300"
-            >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+
+            {isAuthenticate ? (
+              <Link
+                to="/logout"
+                className="ml-2 flex items-center gap-2 px-5 py-2 bg-linear-to-r from-indigo-500 to-purple-600 text-white text-sm font-medium rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300"
+                onClick={() => dispatch(logout())}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                />
-              </svg>
-              Logout
-            </Link>
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                  />
+                </svg>
+                Logout
+              </Link>
+            ) : (
+              <Link to="register">Sign Up</Link>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -151,7 +170,7 @@ const Navbar = () => {
           }`}
         >
           <div className="flex flex-col gap-1 pt-2">
-            {navLinks.map((link) => (
+            {visibleNavLinks.map((link) => (
               <Link
                 key={link.to}
                 to={link.to}
