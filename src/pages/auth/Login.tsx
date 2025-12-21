@@ -31,7 +31,16 @@ const Login = () => {
         .then((response) => {
           setIsLoading(false);
           toast.success("Login successful! Welcome back.");
-          dispatch(login(response.data));
+          // Store token if rememberMe is checked
+          if (rememberMe && response.data.token) {
+            localStorage.setItem("token", response.data.token);
+          }
+          dispatch(
+            login({
+              email: response.data.isUserExist?.email || email,
+              token: response.data.token,
+            })
+          );
           navigate("/");
         })
         .catch((error) => {
