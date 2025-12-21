@@ -127,7 +127,9 @@ const ResetPassword = () => {
       });
       toast.success("Password reset successfully!");
       dispatch(clearResetPasswordEmail());
-      navigate("/login");
+      setTimeout(() => {
+        navigate("/login");
+      }, 1000);
     } catch (error: unknown) {
       console.error("Reset password error:", error);
       const axiosError = error as {
