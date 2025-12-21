@@ -228,7 +228,7 @@ const Home = () => {
 
       {/* Get Started Button */}
       <button
-        onClick={() => navigate("/get-started")}
+        onClick={() => navigate("/register")}
         className="group relative bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white font-semibold py-4 px-10 rounded-full shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 z-10 mt-4"
       >
         <span className="relative z-10">Get Started</span>
