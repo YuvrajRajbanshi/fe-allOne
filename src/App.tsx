@@ -8,8 +8,6 @@ import Footer from "./components/Footer";
 import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
 import OtpVerification from "./pages/auth/OtpVerification";
-// import ForgotPassword from "./pages/auth/ForgotPassword";
-// import ResetPassword from "./pages/auth/ResetPassword";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import ResetPassword from "./pages/auth/ResetPassword";
 import Features from "./components/features/Features";
@@ -18,6 +16,7 @@ import AddDate from "./components/vault/AddDate";
 import AddNote from "./components/vault/AddNote";
 import MemoryAlbums from "./components/albums/MemoryAlbums";
 import AddAlbum from "./components/albums/AddAlbum";
+import PrivateRoute from "./components/PrivateRoute";
 import { Toaster } from "react-hot-toast";
 
 import { useEffect } from "react";
@@ -79,21 +78,73 @@ function App() {
           <Navbar />
         </div>
         <Routes>
+          {/* Public Routes */}
           <Route path="/" element={<Home />} />
           <Route path="/features" element={<Features />} />
-          <Route path="/vault" element={<PersonalVault />} />
-          <Route path="/vault/add-date" element={<AddDate />} />
-          <Route path="/vault/add-note" element={<AddNote />} />
-          <Route path="/albums" element={<MemoryAlbums />} />
-          <Route path="/albums/new" element={<AddAlbum />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/logout" element={<Logout />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/register" element={<Signup />} />
           <Route path="/verify-otp" element={<OtpVerification />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+
+          {/* Private Routes - Require Authentication */}
+          <Route
+            path="/vault"
+            element={
+              <PrivateRoute>
+                <PersonalVault />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/vault/add-date"
+            element={
+              <PrivateRoute>
+                <AddDate />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/vault/add-note"
+            element={
+              <PrivateRoute>
+                <AddNote />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/albums"
+            element={
+              <PrivateRoute>
+                <MemoryAlbums />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/albums/new"
+            element={
+              <PrivateRoute>
+                <AddAlbum />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <PrivateRoute>
+                <Profile />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/logout"
+            element={
+              <PrivateRoute>
+                <Logout />
+              </PrivateRoute>
+            }
+          />
         </Routes>
         <Footer />
       </div>

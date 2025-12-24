@@ -53,7 +53,7 @@ const ForgotPassword = () => {
         <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6">
           {/* Icon */}
           <div className="text-center mb-6">
-            <div className="w-14 h-14 bg-linear-to-br from-amber-500 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg">
+            <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg">
               <svg
                 className="w-7 h-7 text-white"
                 fill="none"
@@ -103,7 +103,7 @@ const ForgotPassword = () => {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-12 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-300"
+                  className="w-full pl-12 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300"
                   placeholder="Enter your email"
                   required
                 />
@@ -114,7 +114,7 @@ const ForgotPassword = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-linear-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold py-2.5 px-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100"
+              className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-semibold py-2.5 px-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100"
             >
               {isLoading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -171,10 +171,10 @@ const ForgotPassword = () => {
         </div>
 
         {/* Decorative elements */}
-        <div className="absolute -top-4 -left-4 w-8 h-8 bg-yellow-300 rounded-full opacity-60 animate-float"></div>
-        <div className="absolute -top-2 -right-6 w-6 h-6 bg-amber-300 rounded-full opacity-60 animate-float-delayed"></div>
-        <div className="absolute -bottom-3 -left-6 w-5 h-5 bg-orange-300 rounded-full opacity-60 animate-float"></div>
-        <div className="absolute -bottom-4 -right-4 w-7 h-7 bg-red-300 rounded-full opacity-60 animate-float-delayed"></div>
+        <div className="absolute -top-4 -left-4 w-8 h-8 bg-indigo-300 rounded-full opacity-60 animate-float"></div>
+        <div className="absolute -top-2 -right-6 w-6 h-6 bg-purple-300 rounded-full opacity-60 animate-float-delayed"></div>
+        <div className="absolute -bottom-3 -left-6 w-5 h-5 bg-pink-300 rounded-full opacity-60 animate-float"></div>
+        <div className="absolute -bottom-4 -right-4 w-7 h-7 bg-indigo-400 rounded-full opacity-60 animate-float-delayed"></div>
       </div>
 
       {/* Custom Animations */}

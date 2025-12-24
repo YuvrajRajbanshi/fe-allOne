@@ -156,7 +156,7 @@ const ResetPassword = () => {
         <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6">
           {/* Icon */}
           <div className="text-center mb-5">
-            <div className="w-14 h-14 bg-linear-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg">
+            <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg">
               <svg
                 className="w-7 h-7 text-white"
                 fill="none"
@@ -174,7 +174,7 @@ const ResetPassword = () => {
             <h1 className="text-xl font-bold text-gray-800">Reset Password</h1>
             <p className="text-gray-500 mt-1 text-sm">
               Enter the OTP sent to{" "}
-              <span className="text-green-600 font-medium">{email}</span>
+              <span className="text-indigo-600 font-medium">{email}</span>
             </p>
           </div>
 
@@ -198,7 +198,7 @@ const ResetPassword = () => {
                     value={digit}
                     onChange={(e) => handleOtpChange(index, e.target.value)}
                     onKeyDown={(e) => handleKeyDown(index, e)}
-                    className="w-10 h-12 text-center text-xl font-bold border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none transition-all bg-white/50"
+                    className="w-10 h-12 text-center text-xl font-bold border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all bg-white/50"
                   />
                 ))}
               </div>
@@ -210,7 +210,7 @@ const ResetPassword = () => {
                     <button
                       type="button"
                       onClick={handleResendOtp}
-                      className="text-green-600 font-medium hover:text-green-700 hover:underline"
+                      className="text-indigo-600 font-medium hover:text-indigo-700 hover:underline"
                     >
                       Resend
                     </button>
@@ -248,7 +248,7 @@ const ResetPassword = () => {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-12 pr-12 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300"
+                  className="w-full pl-12 pr-12 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300"
                   placeholder="Enter new password"
                   required
                   minLength={8}
@@ -325,7 +325,7 @@ const ResetPassword = () => {
                   type={showConfirmPassword ? "text" : "password"}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full pl-12 pr-12 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300"
+                  className="w-full pl-12 pr-12 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300"
                   placeholder="Confirm new password"
                   required
                 />
@@ -377,7 +377,7 @@ const ResetPassword = () => {
             <button
               type="submit"
               disabled={isLoading || otp.join("").length !== 6}
-              className="w-full bg-linear-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-semibold py-2.5 px-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100"
+              className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-semibold py-2.5 px-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100"
             >
               {isLoading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -438,10 +438,10 @@ const ResetPassword = () => {
         </div>
 
         {/* Decorative elements */}
-        <div className="absolute -top-4 -left-4 w-8 h-8 bg-green-300 rounded-full opacity-60 animate-float"></div>
-        <div className="absolute -top-2 -right-6 w-6 h-6 bg-emerald-300 rounded-full opacity-60 animate-float-delayed"></div>
-        <div className="absolute -bottom-3 -left-6 w-5 h-5 bg-teal-300 rounded-full opacity-60 animate-float"></div>
-        <div className="absolute -bottom-4 -right-4 w-7 h-7 bg-cyan-300 rounded-full opacity-60 animate-float-delayed"></div>
+        <div className="absolute -top-4 -left-4 w-8 h-8 bg-indigo-300 rounded-full opacity-60 animate-float"></div>
+        <div className="absolute -top-2 -right-6 w-6 h-6 bg-purple-300 rounded-full opacity-60 animate-float-delayed"></div>
+        <div className="absolute -bottom-3 -left-6 w-5 h-5 bg-pink-300 rounded-full opacity-60 animate-float"></div>
+        <div className="absolute -bottom-4 -right-4 w-7 h-7 bg-indigo-400 rounded-full opacity-60 animate-float-delayed"></div>
       </div>
 
       {/* Custom Animations */}
