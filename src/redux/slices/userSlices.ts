@@ -9,10 +9,14 @@ export interface UserState {
   resetPasswordEmail: string | null;
 }
 
+// Check localStorage for existing token on initialization
+const storedToken = localStorage.getItem("token");
+const storedEmail = localStorage.getItem("userEmail");
+
 const initialState: UserState = {
-  isAuthenticated: false,
-  email: null,
-  token: null,
+  isAuthenticated: !!storedToken,
+  email: storedEmail,
+  token: storedToken,
   pendingVerificationEmail: null,
   resetPasswordEmail: null,
 };
@@ -29,6 +33,10 @@ export const userSlice = createSlice({
       state.email = action.payload.email;
       state.token = action.payload.token || null;
       state.pendingVerificationEmail = null;
+      // Store email in localStorage for persistent login
+      if (action.payload.email) {
+        localStorage.setItem("userEmail", action.payload.email);
+      }
     },
     logout: (state) => {
       state.isAuthenticated = false;
@@ -36,6 +44,7 @@ export const userSlice = createSlice({
       state.token = null;
       state.pendingVerificationEmail = null;
       localStorage.removeItem("token");
+      localStorage.removeItem("userEmail");
     },
     setVerificationEmail: (state, action: PayloadAction<string>) => {
       state.pendingVerificationEmail = action.payload;

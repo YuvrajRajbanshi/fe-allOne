@@ -23,7 +23,6 @@ const Login = () => {
     setIsLoading(true);
     setTimeout(() => {
       axios
-        // .post("https://be-allone.onrender.com/api/users/login", {
         .post(`${apiURL}/api/users/login`, {
           email,
           password,
@@ -31,8 +30,8 @@ const Login = () => {
         .then((response) => {
           setIsLoading(false);
           toast.success("Login successful! Welcome back.");
-          // Store token if rememberMe is checked
-          if (rememberMe && response.data.token) {
+          // Always store token for persistent login
+          if (response.data.token) {
             localStorage.setItem("token", response.data.token);
           }
           dispatch(
