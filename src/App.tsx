@@ -12,6 +12,12 @@ import OtpVerification from "./pages/auth/OtpVerification";
 // import ResetPassword from "./pages/auth/ResetPassword";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import ResetPassword from "./pages/auth/ResetPassword";
+import Features from "./components/features/Features";
+import PersonalVault from "./components/vault/PersonalVault";
+import AddDate from "./components/vault/AddDate";
+import AddNote from "./components/vault/AddNote";
+import MemoryAlbums from "./components/albums/MemoryAlbums";
+import AddAlbum from "./components/albums/AddAlbum";
 import { Toaster } from "react-hot-toast";
 
 import { useEffect } from "react";
@@ -74,6 +80,12 @@ function App() {
         </div>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/features" element={<Features />} />
+          <Route path="/vault" element={<PersonalVault />} />
+          <Route path="/vault/add-date" element={<AddDate />} />
+          <Route path="/vault/add-note" element={<AddNote />} />
+          <Route path="/albums" element={<MemoryAlbums />} />
+          <Route path="/albums/new" element={<AddAlbum />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/logout" element={<Logout />} />
           <Route path="/login" element={<Login />} />
