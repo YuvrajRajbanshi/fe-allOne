@@ -17,6 +17,7 @@ import AddNote from "./components/vault/AddNote";
 import MemoryAlbums from "./components/albums/MemoryAlbums";
 import AddAlbum from "./components/albums/AddAlbum";
 import PrivateRoute from "./components/PrivateRoute";
+import PublicRoute from "./components/PublicRoute";
 import { Toaster } from "react-hot-toast";
 
 import { useEffect } from "react";
@@ -43,7 +44,14 @@ function App() {
         })
         .then((res) => {
           if (res.data && res.data.user) {
-            dispatch(login({ email: res.data.user.email, token }));
+            const storedUserId = localStorage.getItem("userId");
+            dispatch(
+              login({
+                email: res.data.user.email,
+                token,
+                userId: res.data.user._id || storedUserId || "",
+              })
+            );
           }
         })
         .catch(() => {
@@ -81,11 +89,41 @@ function App() {
           {/* Public Routes */}
           <Route path="/" element={<Home />} />
           <Route path="/features" element={<Features />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/register" element={<Signup />} />
+
+          {/* Auth Routes - Redirect to home if already logged in */}
+          <Route
+            path="/login"
+            element={
+              <PublicRoute>
+                <Login />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/signup"
+            element={
+              <PublicRoute>
+                <Signup />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <PublicRoute>
+                <Signup />
+              </PublicRoute>
+            }
+          />
           <Route path="/verify-otp" element={<OtpVerification />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route
+            path="/forgot-password"
+            element={
+              <PublicRoute>
+                <ForgotPassword />
+              </PublicRoute>
+            }
+          />
           <Route path="/reset-password" element={<ResetPassword />} />
 
           {/* Private Routes - Require Authentication */}

@@ -4,7 +4,6 @@ interface AlbumCardProps {
   id: string;
   name: string;
   date: string;
-  photoCount: number;
   thumbnail?: string;
   isBlurred?: boolean;
   onClick?: () => void;
@@ -13,7 +12,6 @@ interface AlbumCardProps {
 const AlbumCard: React.FC<AlbumCardProps> = ({
   name,
   date,
-  photoCount,
   thumbnail,
   isBlurred = true,
   onClick,
@@ -80,9 +78,7 @@ const AlbumCard: React.FC<AlbumCardProps> = ({
       {/* Info */}
       <div className="p-4">
         <h3 className="font-semibold text-gray-800 text-lg mb-1">{name}</h3>
-        <p className="text-sm text-indigo-400">
-          {date} · {photoCount} photos
-        </p>
+        <p className="text-sm text-indigo-400">{date}</p>
       </div>
     </div>
   );

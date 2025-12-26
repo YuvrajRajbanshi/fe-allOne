@@ -38,6 +38,7 @@ const Login = () => {
             login({
               email: response.data.isUserExist?.email || email,
               token: response.data.token,
+              userId: response.data.isUserExist?._id,
             })
           );
           navigate("/");

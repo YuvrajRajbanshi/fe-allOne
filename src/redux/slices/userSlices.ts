@@ -5,6 +5,7 @@ export interface UserState {
   isAuthenticated: boolean;
   email: string | null;
   token?: string | null;
+  userId?: string | null;
   pendingVerificationEmail: string | null;
   resetPasswordEmail: string | null;
 }
@@ -12,6 +13,7 @@ export interface UserState {
 // Check localStorage for existing token on initialization
 const storedToken = localStorage.getItem("token");
 const storedEmail = localStorage.getItem("userEmail");
+const storedUserId = localStorage.getItem("userId");
 
 const initialState: UserState = {
   isAuthenticated: !!storedToken,
@@ -19,6 +21,7 @@ const initialState: UserState = {
   token: storedToken,
   pendingVerificationEmail: null,
   resetPasswordEmail: null,
+  userId: storedUserId,
 };
 
 export const userSlice = createSlice({
@@ -27,13 +30,17 @@ export const userSlice = createSlice({
   reducers: {
     login: (
       state,
-      action: PayloadAction<{ email: string; token?: string }>
+      action: PayloadAction<{ email: string; token?: string; userId: string }>
     ) => {
       state.isAuthenticated = true;
       state.email = action.payload.email;
       state.token = action.payload.token || null;
       state.pendingVerificationEmail = null;
+      state.userId = action.payload.userId;
       // Store email in localStorage for persistent login
+      if (action.payload.userId) {
+        localStorage.setItem("userId", action.payload.userId);
+      }
       if (action.payload.email) {
         localStorage.setItem("userEmail", action.payload.email);
       }
@@ -42,9 +49,11 @@ export const userSlice = createSlice({
       state.isAuthenticated = false;
       state.email = null;
       state.token = null;
+      state.userId = null;
       state.pendingVerificationEmail = null;
       localStorage.removeItem("token");
       localStorage.removeItem("userEmail");
+      localStorage.removeItem("userId");
     },
     setVerificationEmail: (state, action: PayloadAction<string>) => {
       state.pendingVerificationEmail = action.payload;
