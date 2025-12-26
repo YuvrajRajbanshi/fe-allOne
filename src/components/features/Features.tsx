@@ -1,9 +1,14 @@
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../redux/userStore";
 import heroImage from "../../assets/hero/image.png";
 import FeatureCard from "./FeatureCard";
 
 const Features = () => {
   const navigate = useNavigate();
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.user.isAuthenticated
+  );
 
   const vaultIcon = (
     <div className="relative">
@@ -217,14 +222,16 @@ const Features = () => {
         />
       </div>
 
-      {/* Continue Button */}
-      <button
-        onClick={() => navigate("/register")}
-        className="group relative bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white font-semibold py-4 px-10 rounded-full shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 z-10 mb-8"
-      >
-        <span className="relative z-10">Continue to Sign Up</span>
-        <div className="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
-      </button>
+      {/* Continue Button - Only show if not logged in */}
+      {!isAuthenticated && (
+        <button
+          onClick={() => navigate("/register")}
+          className="group relative bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white font-semibold py-4 px-10 rounded-full shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 z-10 mb-8"
+        >
+          <span className="relative z-10">Continue to Sign Up</span>
+          <div className="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+        </button>
+      )}
 
       {/* Custom Animations */}
       <style>{`

@@ -1,57 +1,76 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../redux/userStore";
+import axios from "axios";
 import AlbumCard from "./AlbumCard";
 import NewAlbumCard from "./NewAlbumCard";
 
 interface Album {
-  id: string;
-  name: string;
-  date: string;
-  photoCount: number;
-  thumbnail?: string;
+  _id: string;
+  title: string;
+  url: string;
+  createdAt: string;
 }
 
 const MemoryAlbums = () => {
+  const rawApiURL = import.meta.env.VITE_API_URL as string | undefined;
+  const apiURL = (
+    typeof rawApiURL === "string" && rawApiURL.trim().length > 0
+      ? rawApiURL.trim()
+      : "https://be-allone.onrender.com"
+  ).replace(/\/+$/, "");
+
   const navigate = useNavigate();
+  const userId = useSelector((state: RootState) => state.user.userId);
+
+  const [albums, setAlbums] = useState<Album[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [sortBy, setSortBy] = useState("Date created");
   const [blurFaces, setBlurFaces] = useState(true);
   const [showSortDropdown, setShowSortDropdown] = useState(false);
 
-  // Sample albums data
-  const albums: Album[] = [
-    {
-      id: "1",
-      name: "Family Trip <3",
-      date: "July 2023",
-      photoCount: 256,
-    },
-    {
-      id: "2",
-      name: "College Days",
-      date: "2022-2024",
-      photoCount: 156,
-    },
-    {
-      id: "3",
-      name: "Celebrations",
-      date: "166f year",
-      photoCount: 154,
-    },
-    {
-      id: "4",
-      name: "Nature",
-      date: "",
-      photoCount: 50,
-    },
-    {
-      id: "5",
-      name: "Mumbai",
-      date: "September 2023",
-      photoCount: 30,
-    },
-  ];
+  // Fetch albums on mount
+  useEffect(() => {
+    const fetchAlbums = async () => {
+      if (!userId) {
+        setIsLoading(false);
+        return;
+      }
 
-  const sortOptions = ["Date created", "Name", "Photo count", "Last modified"];
+      try {
+        const response = await axios.get(`${apiURL}/api/album/user/${userId}`);
+        setAlbums(response.data.albums || []);
+      } catch (error) {
+        console.error("Failed to fetch albums:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchAlbums();
+  }, [userId, apiURL]);
+
+  // Sort albums
+  const sortedAlbums = [...albums].sort((a, b) => {
+    switch (sortBy) {
+      case "Name":
+        return a.title.localeCompare(b.title);
+      case "Date created":
+      default:
+        return (
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+    }
+  });
+
+  const sortOptions = ["Date created", "Name"];
+
+  // Format date helper
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-blue-50 px-4 py-8 overflow-hidden relative">
@@ -149,25 +168,58 @@ const MemoryAlbums = () => {
           </div>
         </div>
 
-        {/* Albums Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* New Album Card */}
-          <NewAlbumCard onClick={() => navigate("/albums/new")} />
+        {/* Loading State */}
+        {isLoading ? (
+          <div className="flex items-center justify-center py-20">
+            <svg
+              className="animate-spin h-10 w-10 text-indigo-500"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              />
+            </svg>
+          </div>
+        ) : (
+          /* Albums Grid */
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* New Album Card */}
+            <NewAlbumCard onClick={() => navigate("/albums/new")} />
 
-          {/* Album Cards */}
-          {albums.map((album) => (
-            <AlbumCard
-              key={album.id}
-              id={album.id}
-              name={album.name}
-              date={album.date}
-              photoCount={album.photoCount}
-              thumbnail={album.thumbnail}
-              isBlurred={blurFaces}
-              onClick={() => navigate(`/albums/${album.id}`)}
-            />
-          ))}
-        </div>
+            {/* Album Cards */}
+            {sortedAlbums.map((album) => (
+              <AlbumCard
+                key={album._id}
+                id={album._id}
+                name={album.title}
+                date={formatDate(album.createdAt)}
+                thumbnail={album.url}
+                isBlurred={blurFaces}
+                onClick={() => navigate(`/albums/${album._id}`)}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* Empty State */}
+        {!isLoading && albums.length === 0 && (
+          <div className="text-center py-10">
+            <p className="text-gray-500">
+              No albums yet. Create your first one!
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Custom Animations */}
