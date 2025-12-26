@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 
 const AddAlbum = () => {
   const rawApiURL = import.meta.env.VITE_API_URL as string | undefined;
+  const id = useSelector((state: RootState) => state.user.userId);
   const apiURL = (
     typeof rawApiURL === "string" && rawApiURL.trim().length > 0
       ? rawApiURL.trim()
@@ -68,7 +69,7 @@ const AddAlbum = () => {
 
     try {
       await axios.post(`${apiURL}/api/album/upload`, {
-        userId,
+        userId: id,
         url: imageUrl,
         title: title.trim(),
       });
