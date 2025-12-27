@@ -72,6 +72,26 @@ const MemoryAlbums = () => {
     return date.toLocaleDateString("en-US", { month: "long", year: "numeric" });
   };
 
+  // Delete album handler - removes from state for live update
+  const handleDeleteAlbum = (albumId: string) => {
+    setAlbums((prev) => prev.filter((album) => album._id !== albumId));
+  };
+
+  // Edit album handler - updates title and thumbnail in state for live update
+  const handleEditAlbum = (
+    albumId: string,
+    newTitle: string,
+    newThumbnail: string
+  ) => {
+    setAlbums((prev) =>
+      prev.map((album) =>
+        album._id === albumId
+          ? { ...album, title: newTitle, url: newThumbnail }
+          : album
+      )
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-blue-50 px-4 py-8 overflow-hidden relative">
       {/* Background Blobs */}
@@ -206,7 +226,10 @@ const MemoryAlbums = () => {
                 date={formatDate(album.createdAt)}
                 thumbnail={album.url}
                 isBlurred={blurFaces}
+                apiURL={apiURL}
                 onClick={() => navigate(`/albums/${album._id}`)}
+                onDelete={handleDeleteAlbum}
+                onEdit={handleEditAlbum}
               />
             ))}
           </div>

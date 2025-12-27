@@ -16,6 +16,7 @@ import AddDate from "./components/vault/AddDate";
 import AddNote from "./components/vault/AddNote";
 import MemoryAlbums from "./components/albums/MemoryAlbums";
 import AddAlbum from "./components/albums/AddAlbum";
+import AlbumDetail from "./components/albums/AlbumDetail";
 import PrivateRoute from "./components/PrivateRoute";
 import PublicRoute from "./components/PublicRoute";
 import { Toaster } from "react-hot-toast";
@@ -164,6 +165,14 @@ function App() {
             element={
               <PrivateRoute>
                 <AddAlbum />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/albums/:albumId"
+            element={
+              <PrivateRoute>
+                <AlbumDetail />
               </PrivateRoute>
             }
           />
