@@ -14,12 +14,24 @@ import Features from "./components/features/Features";
 import PersonalVault from "./components/vault/PersonalVault";
 import AddDate from "./components/vault/AddDate";
 import AddNote from "./components/vault/AddNote";
+import AddDocument from "./components/vault/AddDocument";
 import MemoryAlbums from "./components/albums/MemoryAlbums";
 import AddAlbum from "./components/albums/AddAlbum";
 import AlbumDetail from "./components/albums/AlbumDetail";
 import PrivateRoute from "./components/PrivateRoute";
 import PublicRoute from "./components/PublicRoute";
 import { Toaster } from "react-hot-toast";
+
+// Category imports
+import DateCategories from "./components/vault/DateCategories";
+import NoteCategories from "./components/vault/NoteCategories";
+import DocCategories from "./components/vault/DocCategories";
+import AddDateCategory from "./components/vault/AddDateCategory";
+import AddNoteCategory from "./components/vault/AddNoteCategory";
+import AddDocCategory from "./components/vault/AddDocCategory";
+import DateCategoryDetail from "./components/vault/DateCategoryDetail";
+import NoteCategoryDetail from "./components/vault/NoteCategoryDetail";
+import DocCategoryDetail from "./components/vault/DocCategoryDetail";
 
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
@@ -152,6 +164,93 @@ function App() {
               </PrivateRoute>
             }
           />
+          <Route
+            path="/vault/add-document"
+            element={
+              <PrivateRoute>
+                <AddDocument />
+              </PrivateRoute>
+            }
+          />
+
+          {/* Date Categories Routes */}
+          <Route
+            path="/vault/dates"
+            element={
+              <PrivateRoute>
+                <DateCategories />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/vault/dates/add-category"
+            element={
+              <PrivateRoute>
+                <AddDateCategory />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/vault/dates/:categoryId"
+            element={
+              <PrivateRoute>
+                <DateCategoryDetail />
+              </PrivateRoute>
+            }
+          />
+
+          {/* Note Categories Routes */}
+          <Route
+            path="/vault/notes"
+            element={
+              <PrivateRoute>
+                <NoteCategories />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/vault/notes/add-category"
+            element={
+              <PrivateRoute>
+                <AddNoteCategory />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/vault/notes/:categoryId"
+            element={
+              <PrivateRoute>
+                <NoteCategoryDetail />
+              </PrivateRoute>
+            }
+          />
+
+          {/* Document Categories Routes */}
+          <Route
+            path="/vault/documents"
+            element={
+              <PrivateRoute>
+                <DocCategories />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/vault/documents/add-category"
+            element={
+              <PrivateRoute>
+                <AddDocCategory />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/vault/documents/:categoryId"
+            element={
+              <PrivateRoute>
+                <DocCategoryDetail />
+              </PrivateRoute>
+            }
+          />
+
           <Route
             path="/albums"
             element={

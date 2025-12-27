@@ -1,6 +1,7 @@
 import ImportantDates from "./ImportantDates";
 import PrivateNotes from "./PrivateNotes";
 import PersonalPhotos from "./PersonalPhotos";
+import MyDocuments from "./MyDocuments";
 import { useNavigate } from "react-router-dom";
 
 const PersonalVault = () => {
@@ -23,10 +24,11 @@ const PersonalVault = () => {
         </div>
 
         {/* Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <ImportantDates onAddDate={() => navigate("/vault/add-date")} />
-          <PrivateNotes onAddNote={() => navigate("/vault/add-note")} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <ImportantDates onAddDate={() => navigate("/vault/dates")} />
+          <PrivateNotes onAddNote={() => navigate("/vault/notes")} />
           <PersonalPhotos onViewAlbums={() => navigate("/albums")} />
+          <MyDocuments onAddDocument={() => navigate("/vault/documents")} />
         </div>
       </div>
 
