@@ -59,6 +59,12 @@ const AddAlbum = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!userId) {
+      toast.error("You must be logged in to create an album");
+      navigate("/login");
+      return;
+    }
+
     if (!imageUrl || !title.trim()) {
       toast.error("Please add an image and title");
       return;
