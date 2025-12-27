@@ -303,11 +303,11 @@ const AlbumCard: React.FC<AlbumCardProps> = ({
       {/* Edit Modal - Full Screen Overlay */}
       {showEditModal && (
         <div
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 p-0 sm:p-4"
           onClick={cancelEdit}
         >
           <div
-            className="bg-white rounded-3xl shadow-2xl w-full max-w-md transform transition-all animate-in fade-in zoom-in duration-200"
+            className="bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto transform transition-all animate-in fade-in zoom-in duration-200"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
