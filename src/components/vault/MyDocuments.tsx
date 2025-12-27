@@ -7,15 +7,14 @@ import type { RootState } from "../../redux/userStore";
 interface CategoryItem {
   _id: string;
   name: string;
-  type: "birthday" | "anniversary" | "event" | "other";
   itemCount: number;
 }
 
-interface ImportantDatesProps {
-  onAddDate?: () => void;
+interface MyDocumentsProps {
+  onAddDocument?: () => void;
 }
 
-const ImportantDates: React.FC<ImportantDatesProps> = ({ onAddDate }) => {
+const MyDocuments: React.FC<MyDocumentsProps> = ({ onAddDocument }) => {
   const rawApiURL = import.meta.env.VITE_API_URL as string | undefined;
   const apiURL = (
     typeof rawApiURL === "string" && rawApiURL.trim().length > 0
@@ -37,7 +36,7 @@ const ImportantDates: React.FC<ImportantDatesProps> = ({ onAddDate }) => {
   const fetchCategories = async () => {
     try {
       const response = await axios.get(
-        `${apiURL}/api/date-categories/user/${userId}`
+        `${apiURL}/api/doc-categories/user/${userId}`
       );
       setCategories(response.data.categories.slice(0, 3));
     } catch (error) {
@@ -47,40 +46,17 @@ const ImportantDates: React.FC<ImportantDatesProps> = ({ onAddDate }) => {
     }
   };
 
-  const getIcon = (type: string) => {
-    switch (type) {
-      case "birthday":
-        return (
-          <div className="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
-            <span className="text-lg">🎂</span>
-          </div>
-        );
-      case "anniversary":
-        return (
-          <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-            <span className="text-lg">💍</span>
-          </div>
-        );
-      default:
-        return (
-          <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-            <span className="text-lg">📅</span>
-          </div>
-        );
-    }
-  };
-
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <div className="w-12 h-12 bg-gradient-to-br from-orange-100 to-orange-200 rounded-xl flex items-center justify-center">
+        <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center">
           <svg
-            className="w-6 h-6 text-orange-500"
+            className="w-6 h-6 text-blue-600"
             viewBox="0 0 24 24"
             fill="currentColor"
           >
-            <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm-8 4H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z" />
+            <path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z" />
           </svg>
         </div>
         <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
@@ -95,29 +71,29 @@ const ImportantDates: React.FC<ImportantDatesProps> = ({ onAddDate }) => {
       </div>
 
       {/* Title */}
-      <h3 className="text-xl font-bold text-gray-800 mb-6">Important dates</h3>
+      <h3 className="text-xl font-bold text-gray-800 mb-6">My Documents</h3>
 
       {/* Categories List */}
       <div className="space-y-3 mb-6">
         {isLoading ? (
           <div className="flex items-center justify-center py-8">
-            <div className="w-6 h-6 border-2 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+            <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
           </div>
         ) : categories.length > 0 ? (
-          categories.map((item) => (
+          categories.map((cat) => (
             <div
-              key={item._id}
-              onClick={() => navigate(`/vault/dates/${item._id}`)}
-              className="flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer"
+              key={cat._id}
+              onClick={() => navigate(`/vault/documents/${cat._id}`)}
+              className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer group"
             >
-              <div className="flex items-center gap-3">
-                {getIcon(item.type)}
-                <div>
-                  <p className="font-medium text-gray-800">{item.name}</p>
-                  <p className="text-sm text-gray-400">
-                    {item.itemCount} dates
-                  </p>
-                </div>
+              <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center group-hover:bg-blue-100 transition-colors">
+                <span className="text-xl">📁</span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-medium text-gray-800 truncate">{cat.name}</p>
+                <p className="text-xs text-gray-400">
+                  {cat.itemCount} documents
+                </p>
               </div>
               <svg
                 className="w-5 h-5 text-gray-300"
@@ -130,7 +106,13 @@ const ImportantDates: React.FC<ImportantDatesProps> = ({ onAddDate }) => {
           ))
         ) : (
           <div className="text-center py-6 text-gray-400">
-            <span className="text-3xl mb-2 block">📅</span>
+            <svg
+              className="w-12 h-12 mx-auto mb-2 text-gray-200"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
+            </svg>
             <p className="text-sm">No categories yet</p>
           </div>
         )}
@@ -138,8 +120,8 @@ const ImportantDates: React.FC<ImportantDatesProps> = ({ onAddDate }) => {
 
       {/* View All Button */}
       <button
-        onClick={onAddDate}
-        className="flex items-center gap-2 text-orange-500 hover:text-orange-600 font-medium transition-colors"
+        onClick={onAddDocument}
+        className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium transition-colors"
       >
         <span className="text-lg">→</span>
         <span>View all categories</span>
@@ -148,4 +130,4 @@ const ImportantDates: React.FC<ImportantDatesProps> = ({ onAddDate }) => {
   );
 };
 
-export default ImportantDates;
+export default MyDocuments;

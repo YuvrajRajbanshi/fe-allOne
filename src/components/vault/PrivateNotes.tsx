@@ -1,23 +1,66 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import type { RootState } from "../../redux/userStore";
 
-interface NoteItem {
-  id: string;
-  title: string;
-  date: string;
+interface CategoryItem {
+  _id: string;
+  name: string;
+  color: string;
+  itemCount: number;
 }
 
 interface PrivateNotesProps {
-  notes?: NoteItem[];
   onAddNote?: () => void;
 }
 
-const PrivateNotes: React.FC<PrivateNotesProps> = ({
-  notes = [
-    { id: "1", title: "System design ideas", date: "April 16, 2024" },
-    { id: "2", title: "React coding tips", date: "April 10, 2024" },
-  ],
-  onAddNote,
-}) => {
+const PrivateNotes: React.FC<PrivateNotesProps> = ({ onAddNote }) => {
+  const rawApiURL = import.meta.env.VITE_API_URL as string | undefined;
+  const apiURL = (
+    typeof rawApiURL === "string" && rawApiURL.trim().length > 0
+      ? rawApiURL.trim()
+      : "https://be-allone.onrender.com"
+  ).replace(/\/+$/, "");
+
+  const navigate = useNavigate();
+  const userId = useSelector((state: RootState) => state.user.userId);
+  const [categories, setCategories] = useState<CategoryItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (userId) {
+      fetchCategories();
+    }
+  }, [userId]);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get(
+        `${apiURL}/api/note-categories/user/${userId}`
+      );
+      setCategories(response.data.categories.slice(0, 3));
+    } catch (error) {
+      console.error("Failed to fetch categories:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const getColorClass = (color: string) => {
+    const colors: Record<string, string> = {
+      red: "bg-red-100",
+      orange: "bg-orange-100",
+      yellow: "bg-yellow-100",
+      green: "bg-green-100",
+      blue: "bg-blue-100",
+      indigo: "bg-indigo-100",
+      purple: "bg-purple-100",
+      pink: "bg-pink-100",
+    };
+    return colors[color] || "bg-indigo-100";
+  };
+
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
       {/* Header */}
@@ -45,37 +88,51 @@ const PrivateNotes: React.FC<PrivateNotesProps> = ({
       {/* Title */}
       <h3 className="text-xl font-bold text-gray-800 mb-6">Private notes</h3>
 
-      {/* Notes List */}
-      <div className="space-y-4 mb-6">
-        {notes.map((note) => (
-          <div
-            key={note.id}
-            className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer"
-          >
-            <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center">
-              <svg
-                className="w-4 h-4 text-indigo-400"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
-              </svg>
-            </div>
-            <div>
-              <p className="font-medium text-gray-800">{note.title}</p>
-              <p className="text-sm text-gray-400">{note.date}</p>
-            </div>
+      {/* Categories List */}
+      <div className="space-y-3 mb-6">
+        {isLoading ? (
+          <div className="flex items-center justify-center py-8">
+            <div className="w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
           </div>
-        ))}
+        ) : categories.length > 0 ? (
+          categories.map((cat) => (
+            <div
+              key={cat._id}
+              onClick={() => navigate(`/vault/notes/${cat._id}`)}
+              className={`flex items-center gap-3 p-3 rounded-xl hover:opacity-80 transition-all cursor-pointer ${getColorClass(
+                cat.color
+              )}`}
+            >
+              <div className="w-8 h-8 bg-white/60 rounded-lg flex items-center justify-center">
+                <span className="text-lg">📝</span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-medium text-gray-800 truncate">{cat.name}</p>
+                <p className="text-sm text-gray-400">{cat.itemCount} notes</p>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="text-center py-6 text-gray-400">
+            <svg
+              className="w-12 h-12 mx-auto mb-2 text-gray-200"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
+            </svg>
+            <p className="text-sm">No categories yet</p>
+          </div>
+        )}
       </div>
 
-      {/* Add Note Button */}
+      {/* View All Button */}
       <button
         onClick={onAddNote}
         className="flex items-center gap-2 text-indigo-500 hover:text-indigo-600 font-medium transition-colors"
       >
-        <span className="text-lg">+</span>
-        <span>Add note</span>
+        <span className="text-lg">→</span>
+        <span>View all categories</span>
       </button>
     </div>
   );

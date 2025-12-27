@@ -1,5 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../redux/userStore";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 interface NoteFormData {
   title: string;
@@ -8,7 +12,16 @@ interface NoteFormData {
 }
 
 const AddNote = () => {
+  const rawApiURL = import.meta.env.VITE_API_URL as string | undefined;
+  const apiURL = (
+    typeof rawApiURL === "string" && rawApiURL.trim().length > 0
+      ? rawApiURL.trim()
+      : "https://be-allone.onrender.com"
+  ).replace(/\/+$/, "");
+
   const navigate = useNavigate();
+  const userId = useSelector((state: RootState) => state.user.userId);
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<NoteFormData>({
     title: "",
     content: "",
@@ -24,11 +37,36 @@ const AddNote = () => {
     { id: "pink", bg: "bg-pink-50", border: "border-pink-200" },
   ];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Saving note:", formData);
-    // TODO: Save to backend
-    navigate("/vault");
+
+    if (!userId) {
+      toast.error("You must be logged in");
+      navigate("/login");
+      return;
+    }
+
+    if (!formData.title.trim()) {
+      toast.error("Please add a title");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      await axios.post(`${apiURL}/api/notes`, {
+        userId,
+        title: formData.title.trim(),
+        content: formData.content,
+        color: formData.color,
+      });
+      toast.success("Note saved!");
+      navigate("/vault");
+    } catch (error) {
+      console.error("Failed to save note:", error);
+      toast.error("Failed to save note");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const selectedColor = noteColors.find((c) => c.id === formData.color);
@@ -156,9 +194,10 @@ const AddNote = () => {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full py-4 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white font-semibold rounded-xl hover:from-indigo-600 hover:to-indigo-700 transition-all shadow-lg hover:shadow-xl"
+              disabled={isLoading}
+              className="w-full py-4 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white font-semibold rounded-xl hover:from-indigo-600 hover:to-indigo-700 transition-all shadow-lg hover:shadow-xl disabled:opacity-50"
             >
-              Save Note
+              {isLoading ? "Saving..." : "Save Note"}
             </button>
           </div>
         </form>

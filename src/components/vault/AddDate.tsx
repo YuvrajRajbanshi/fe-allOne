@@ -1,5 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../redux/userStore";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 interface DateFormData {
   title: string;
@@ -10,7 +14,16 @@ interface DateFormData {
 }
 
 const AddDate = () => {
+  const rawApiURL = import.meta.env.VITE_API_URL as string | undefined;
+  const apiURL = (
+    typeof rawApiURL === "string" && rawApiURL.trim().length > 0
+      ? rawApiURL.trim()
+      : "https://be-allone.onrender.com"
+  ).replace(/\/+$/, "");
+
   const navigate = useNavigate();
+  const userId = useSelector((state: RootState) => state.user.userId);
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<DateFormData>({
     title: "",
     date: "",
@@ -25,11 +38,38 @@ const AddDate = () => {
     { id: "event", label: "Event", icon: "📅", color: "blue" },
   ];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Saving date:", formData);
-    // TODO: Save to backend
-    navigate("/vault");
+
+    if (!userId) {
+      toast.error("You must be logged in");
+      navigate("/login");
+      return;
+    }
+
+    if (!formData.title.trim() || !formData.date) {
+      toast.error("Please fill in title and date");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      await axios.post(`${apiURL}/api/dates`, {
+        userId,
+        title: formData.title.trim(),
+        date: formData.date,
+        type: formData.type,
+        description: formData.description.trim(),
+        reminder: formData.reminder,
+      });
+      toast.success("Important date saved!");
+      navigate("/vault");
+    } catch (error) {
+      console.error("Failed to save date:", error);
+      toast.error("Failed to save date");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -178,9 +218,10 @@ const AddDate = () => {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full py-4 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white font-semibold rounded-xl hover:from-indigo-600 hover:to-indigo-700 transition-all shadow-lg hover:shadow-xl"
+              disabled={isLoading}
+              className="w-full py-4 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white font-semibold rounded-xl hover:from-indigo-600 hover:to-indigo-700 transition-all shadow-lg hover:shadow-xl disabled:opacity-50"
             >
-              Save Date
+              {isLoading ? "Saving..." : "Save Date"}
             </button>
           </div>
         </form>
