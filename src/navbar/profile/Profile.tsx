@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../redux/userStore";
-import axios from "axios";
+import api from "../../api/axiosInstance";
 import toast from "react-hot-toast";
 
 interface ProfileStats {
@@ -30,11 +30,6 @@ const Profile = () => {
 
   const user = useSelector((state: RootState) => state.user);
 
-  const apiURL =
-    import.meta.env.MODE === "development"
-      ? "http://localhost:8888"
-      : "https://be-allone.onrender.com";
-
   useEffect(() => {
     fetchProfileData();
   }, [user.userId]);
@@ -44,7 +39,7 @@ const Profile = () => {
 
     try {
       setIsLoading(true);
-      const response = await axios.get(`${apiURL}/api/profile/${user.userId}`);
+      const response = await api.get(`/api/profile/${user.userId}`);
       setProfileData(response.data);
       setEditName(response.data.user.name);
     } catch (error) {
@@ -62,7 +57,7 @@ const Profile = () => {
     }
 
     try {
-      await axios.put(`${apiURL}/api/profile/${user.userId}`, {
+      await api.put(`/api/profile/${user.userId}`, {
         name: editName,
       });
       toast.success("Name updated successfully");
@@ -83,13 +78,10 @@ const Profile = () => {
 
     try {
       setIsUploading(true);
-      const uploadRes = await axios.post(
-        `${apiURL}/api/images/upload`,
-        formData
-      );
+      const uploadRes = await api.post(`/api/images/upload`, formData);
       const avatarUrl = uploadRes.data.url;
 
-      await axios.put(`${apiURL}/api/profile/${user.userId}`, {
+      await api.put(`/api/profile/${user.userId}`, {
         name: profileData?.user.name,
         avatar: avatarUrl,
       });

@@ -1,4 +1,4 @@
-import axios from "axios";
+import api from "../../api/axiosInstance";
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -6,13 +6,6 @@ import type { RootState } from "../../redux/userStore";
 import toast from "react-hot-toast";
 
 const AddAlbum = () => {
-  const rawApiURL = import.meta.env.VITE_API_URL as string | undefined;
-  const apiURL = (
-    typeof rawApiURL === "string" && rawApiURL.trim().length > 0
-      ? rawApiURL.trim()
-      : "https://be-allone.onrender.com"
-  ).replace(/\/+$/, "");
-
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const userId = useSelector((state: RootState) => state.user.userId);
@@ -36,13 +29,9 @@ const AddAlbum = () => {
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await axios.post(
-        `${apiURL}/api/images/upload`,
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
+      const response = await api.post(`/api/images/upload`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
       setImageUrl(response.data.url);
       toast.success("Image uploaded successfully!");
@@ -73,8 +62,7 @@ const AddAlbum = () => {
     setIsSaving(true);
 
     try {
-      await axios.post(`${apiURL}/api/album/upload`, {
-        userId,
+      await api.post(`/api/album/upload`, {
         url: imageUrl,
         title: title.trim(),
       });

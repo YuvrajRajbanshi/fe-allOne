@@ -2,17 +2,10 @@ import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../redux/userStore";
-import axios from "axios";
+import api from "../../api/axiosInstance";
 import toast from "react-hot-toast";
 
 const AddDocument = () => {
-  const rawApiURL = import.meta.env.VITE_API_URL as string | undefined;
-  const apiURL = (
-    typeof rawApiURL === "string" && rawApiURL.trim().length > 0
-      ? rawApiURL.trim()
-      : "https://be-allone.onrender.com"
-  ).replace(/\/+$/, "");
-
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const userId = useSelector((state: RootState) => state.user.userId);
@@ -78,7 +71,7 @@ const AddDocument = () => {
       formData.append("userId", userId);
       formData.append("title", title.trim());
 
-      await axios.post(`${apiURL}/api/documents/upload`, formData, {
+      await api.post(`/api/documents/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
