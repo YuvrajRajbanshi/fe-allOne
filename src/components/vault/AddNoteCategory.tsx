@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import axios from "axios";
+import api from "../../api/axiosInstance";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
@@ -10,13 +10,6 @@ interface AddNoteCategoryProps {
 }
 
 const AddNoteCategory: React.FC<AddNoteCategoryProps> = ({ onSuccess }) => {
-  const rawApiURL = import.meta.env.VITE_API_URL as string | undefined;
-  const apiURL = (
-    typeof rawApiURL === "string" && rawApiURL.trim().length > 0
-      ? rawApiURL.trim()
-      : "https://be-allone.onrender.com"
-  ).replace(/\/+$/, "");
-
   const navigate = useNavigate();
   const userId = useSelector((state: RootState) => state.user.userId);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -46,13 +39,9 @@ const AddNoteCategory: React.FC<AddNoteCategoryProps> = ({ onSuccess }) => {
       const formDataUpload = new FormData();
       formDataUpload.append("file", file);
 
-      const response = await axios.post(
-        `${apiURL}/api/images/upload`,
-        formDataUpload,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
+      const response = await api.post(`/api/images/upload`, formDataUpload, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
       setFormData((prev) => ({ ...prev, thumbnail: response.data.url }));
       toast.success("Thumbnail uploaded!");
@@ -75,7 +64,7 @@ const AddNoteCategory: React.FC<AddNoteCategoryProps> = ({ onSuccess }) => {
 
     setIsSubmitting(true);
     try {
-      await axios.post(`${apiURL}/api/note-categories`, {
+      await api.post(`/api/note-categories`, {
         userId,
         name: formData.name,
         color: formData.color,

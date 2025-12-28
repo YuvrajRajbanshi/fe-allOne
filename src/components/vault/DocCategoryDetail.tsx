@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import axios from "axios";
+import api from "../../api/axiosInstance";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
@@ -28,13 +28,6 @@ interface Category {
 }
 
 const DocCategoryDetail: React.FC = () => {
-  const rawApiURL = import.meta.env.VITE_API_URL as string | undefined;
-  const apiURL = (
-    typeof rawApiURL === "string" && rawApiURL.trim().length > 0
-      ? rawApiURL.trim()
-      : "https://be-allone.onrender.com"
-  ).replace(/\/+$/, "");
-
   const { categoryId } = useParams<{ categoryId: string }>();
   const navigate = useNavigate();
   const userId = useSelector((state: RootState) => state.user.userId);
@@ -63,9 +56,7 @@ const DocCategoryDetail: React.FC = () => {
 
   const fetchCategoryData = async () => {
     try {
-      const response = await axios.get(
-        `${apiURL}/api/doc-categories/${categoryId}`
-      );
+      const response = await api.get(`/api/doc-categories/${categoryId}`);
       setCategory(response.data.category);
       setDocuments(response.data.documents);
     } catch (error) {
@@ -102,7 +93,7 @@ const DocCategoryDetail: React.FC = () => {
       formData.append("title", newDoc.title);
       formData.append("file", newDoc.file);
 
-      await axios.post(`${apiURL}/api/documents/upload`, formData, {
+      await api.post(`/api/documents/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -122,7 +113,7 @@ const DocCategoryDetail: React.FC = () => {
     if (!confirm("Are you sure you want to delete this document?")) return;
 
     try {
-      await axios.delete(`${apiURL}/api/documents/${docId}`, {
+      await api.delete(`/api/documents/${docId}`, {
         data: { userId },
       });
       toast.success("Document deleted!");
@@ -160,10 +151,10 @@ const DocCategoryDetail: React.FC = () => {
       toast.loading("Downloading...", { id: "download" });
 
       // Fetch file via proxy endpoint
-      const response = await fetch(
-        `${apiURL}/api/documents/content/${doc._id}`
-      );
-      const blob = await response.blob();
+      const response = await api.get(`/api/documents/content/${doc._id}`, {
+        responseType: "blob",
+      });
+      const blob = response.data;
 
       // Create download link
       const blobUrl = URL.createObjectURL(blob);

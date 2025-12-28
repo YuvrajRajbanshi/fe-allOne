@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../api/axiosInstance";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import type { RootState } from "../../redux/userStore";
@@ -16,13 +16,6 @@ interface PrivateNotesProps {
 }
 
 const PrivateNotes: React.FC<PrivateNotesProps> = ({ onAddNote }) => {
-  const rawApiURL = import.meta.env.VITE_API_URL as string | undefined;
-  const apiURL = (
-    typeof rawApiURL === "string" && rawApiURL.trim().length > 0
-      ? rawApiURL.trim()
-      : "https://be-allone.onrender.com"
-  ).replace(/\/+$/, "");
-
   const navigate = useNavigate();
   const userId = useSelector((state: RootState) => state.user.userId);
   const [categories, setCategories] = useState<CategoryItem[]>([]);
@@ -36,9 +29,7 @@ const PrivateNotes: React.FC<PrivateNotesProps> = ({ onAddNote }) => {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get(
-        `${apiURL}/api/note-categories/user/${userId}`
-      );
+      const response = await api.get(`/api/note-categories/user/${userId}`);
       setCategories(response.data.categories.slice(0, 3));
     } catch (error) {
       console.error("Failed to fetch categories:", error);

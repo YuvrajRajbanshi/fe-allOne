@@ -1,4 +1,4 @@
-import axios from "axios";
+import api from "../../api/axiosInstance";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 
@@ -8,7 +8,6 @@ interface AlbumCardProps {
   date: string;
   thumbnail?: string;
   isBlurred?: boolean;
-  apiURL: string;
   onClick?: () => void;
   onDelete?: (id: string) => void;
   onEdit?: (id: string, newTitle: string, newThumbnail: string) => void;
@@ -20,7 +19,6 @@ const AlbumCard: React.FC<AlbumCardProps> = ({
   date,
   thumbnail,
   isBlurred = true,
-  apiURL,
   onClick,
   onDelete,
   onEdit,
@@ -58,7 +56,7 @@ const AlbumCard: React.FC<AlbumCardProps> = ({
     e.stopPropagation();
     setIsDeleting(true);
     try {
-      await axios.delete(`${apiURL}/api/album/delete-album`, {
+      await api.delete(`/api/album/delete-album`, {
         data: { _id: id },
       });
       toast.success("Album deleted successfully!");
@@ -97,13 +95,9 @@ const AlbumCard: React.FC<AlbumCardProps> = ({
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await axios.post(
-        `${apiURL}/api/images/upload`,
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
+      const response = await api.post(`/api/images/upload`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
       setEditThumbnail(response.data.url);
       toast.success("Image uploaded!");
@@ -128,7 +122,7 @@ const AlbumCard: React.FC<AlbumCardProps> = ({
     }
     setIsUpdating(true);
     try {
-      await axios.put(`${apiURL}/api/album/update-album`, {
+      await api.put(`/api/album/update-album`, {
         id: id,
         title: editTitle.trim(),
         url: editThumbnail,

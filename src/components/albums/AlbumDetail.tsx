@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../../api/axiosInstance";
 import toast from "react-hot-toast";
 
 interface Photo {
@@ -18,13 +18,6 @@ interface Album {
 }
 
 const AlbumDetail = () => {
-  const rawApiURL = import.meta.env.VITE_API_URL as string | undefined;
-  const apiURL = (
-    typeof rawApiURL === "string" && rawApiURL.trim().length > 0
-      ? rawApiURL.trim()
-      : "https://be-allone.onrender.com"
-  ).replace(/\/+$/, "");
-
   const { albumId } = useParams<{ albumId: string }>();
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -46,9 +39,7 @@ const AlbumDetail = () => {
       if (!albumId) return;
 
       try {
-        const response = await axios.get(
-          `${apiURL}/api/photos/album-details/${albumId}`
-        );
+        const response = await api.get(`/api/photos/album-details/${albumId}`);
         setAlbum(response.data.album);
         setPhotos(response.data.photos || []);
       } catch (error) {
@@ -61,7 +52,7 @@ const AlbumDetail = () => {
     };
 
     fetchAlbumDetails();
-  }, [albumId, apiURL, navigate]);
+  }, [albumId, navigate]);
 
   // Handle multiple image upload
   const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,20 +71,16 @@ const AlbumDetail = () => {
         const formData = new FormData();
         formData.append("file", file);
 
-        const response = await axios.post(
-          `${apiURL}/api/images/upload`,
-          formData,
-          {
-            headers: { "Content-Type": "multipart/form-data" },
-          }
-        );
+        const response = await api.post(`/api/images/upload`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
 
         uploadedUrls.push(response.data.url);
         setUploadProgress(Math.round(((i + 1) / totalFiles) * 100));
       }
 
       // Add photos to album
-      const addResponse = await axios.post(`${apiURL}/api/photos/add`, {
+      const addResponse = await api.post(`/api/photos/add`, {
         albumId,
         urls: uploadedUrls,
       });
@@ -116,7 +103,7 @@ const AlbumDetail = () => {
   const handleDeletePhoto = async (photoId: string) => {
     setIsDeleting(true);
     try {
-      await axios.delete(`${apiURL}/api/photos/delete`, {
+      await api.delete(`/api/photos/delete`, {
         data: { photoId },
       });
       setPhotos((prev) => prev.filter((photo) => photo._id !== photoId));
