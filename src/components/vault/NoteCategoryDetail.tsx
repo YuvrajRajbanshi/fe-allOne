@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../api/axiosInstance";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
@@ -23,13 +23,6 @@ interface Category {
 }
 
 const NoteCategoryDetail: React.FC = () => {
-  const rawApiURL = import.meta.env.VITE_API_URL as string | undefined;
-  const apiURL = (
-    typeof rawApiURL === "string" && rawApiURL.trim().length > 0
-      ? rawApiURL.trim()
-      : "https://be-allone.onrender.com"
-  ).replace(/\/+$/, "");
-
   const { categoryId } = useParams<{ categoryId: string }>();
   const navigate = useNavigate();
   const userId = useSelector((state: RootState) => state.user.userId);
@@ -53,9 +46,7 @@ const NoteCategoryDetail: React.FC = () => {
 
   const fetchCategoryData = async () => {
     try {
-      const response = await axios.get(
-        `${apiURL}/api/note-categories/${categoryId}`
-      );
+      const response = await api.get(`/api/note-categories/${categoryId}`);
       setCategory(response.data.category);
       setNotes(response.data.notes);
     } catch (error) {
@@ -75,7 +66,7 @@ const NoteCategoryDetail: React.FC = () => {
 
     setIsSubmitting(true);
     try {
-      await axios.post(`${apiURL}/api/notes`, {
+      await api.post(`/api/notes`, {
         userId,
         categoryId,
         title: newNote.title,
@@ -98,7 +89,7 @@ const NoteCategoryDetail: React.FC = () => {
     if (!confirm("Are you sure you want to delete this note?")) return;
 
     try {
-      await axios.delete(`${apiURL}/api/notes/${noteId}`, {
+      await api.delete(`/api/notes/${noteId}`, {
         data: { userId },
       });
       toast.success("Note deleted!");
@@ -112,7 +103,7 @@ const NoteCategoryDetail: React.FC = () => {
 
   const handleTogglePin = async (note: NoteItem) => {
     try {
-      await axios.put(`${apiURL}/api/notes/${note._id}`, {
+      await api.put(`/api/notes/${note._id}`, {
         userId,
         isPinned: !note.isPinned,
       });

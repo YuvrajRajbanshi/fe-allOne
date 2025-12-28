@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../redux/userStore";
-import axios from "axios";
+import api from "../../api/axiosInstance";
 import toast from "react-hot-toast";
 
 interface DateFormData {
@@ -14,13 +14,6 @@ interface DateFormData {
 }
 
 const AddDate = () => {
-  const rawApiURL = import.meta.env.VITE_API_URL as string | undefined;
-  const apiURL = (
-    typeof rawApiURL === "string" && rawApiURL.trim().length > 0
-      ? rawApiURL.trim()
-      : "https://be-allone.onrender.com"
-  ).replace(/\/+$/, "");
-
   const navigate = useNavigate();
   const userId = useSelector((state: RootState) => state.user.userId);
   const [isLoading, setIsLoading] = useState(false);
@@ -54,7 +47,7 @@ const AddDate = () => {
 
     setIsLoading(true);
     try {
-      await axios.post(`${apiURL}/api/dates`, {
+      await api.post(`/api/dates`, {
         userId,
         title: formData.title.trim(),
         date: formData.date,

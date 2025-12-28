@@ -35,7 +35,7 @@ import DocCategoryDetail from "./components/vault/DocCategoryDetail";
 
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import axios from "axios";
+import api from "./api/axiosInstance";
 import { login, logout } from "./redux/slices/userSlices";
 
 import { useState } from "react";
@@ -45,16 +45,8 @@ function App() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      const apiURL = (
-        typeof import.meta.env.VITE_API_URL === "string" &&
-        import.meta.env.VITE_API_URL.trim().length > 0
-          ? import.meta.env.VITE_API_URL.trim()
-          : "https://be-allone.onrender.com"
-      ).replace(/\/+$/, "");
-      axios
-        .get(`${apiURL}/api/users/verify-token`, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
+      api
+        .get(`/api/users/verify-token`)
         .then((res) => {
           if (res.data && res.data.user) {
             const storedUserId = localStorage.getItem("userId");

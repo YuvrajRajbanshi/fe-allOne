@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../redux/userStore";
-import axios from "axios";
+import api from "../../api/axiosInstance";
 import AlbumCard from "./AlbumCard";
 import NewAlbumCard from "./NewAlbumCard";
 
@@ -14,13 +14,6 @@ interface Album {
 }
 
 const MemoryAlbums = () => {
-  const rawApiURL = import.meta.env.VITE_API_URL as string | undefined;
-  const apiURL = (
-    typeof rawApiURL === "string" && rawApiURL.trim().length > 0
-      ? rawApiURL.trim()
-      : "https://be-allone.onrender.com"
-  ).replace(/\/+$/, "");
-
   const navigate = useNavigate();
   const userId = useSelector((state: RootState) => state.user.userId);
 
@@ -39,7 +32,7 @@ const MemoryAlbums = () => {
       }
 
       try {
-        const response = await axios.get(`${apiURL}/api/album/user/${userId}`);
+        const response = await api.get(`/api/album/user/${userId}`);
         setAlbums(response.data.albums || []);
       } catch (error) {
         console.error("Failed to fetch albums:", error);
@@ -49,7 +42,7 @@ const MemoryAlbums = () => {
     };
 
     fetchAlbums();
-  }, [userId, apiURL]);
+  }, [userId]);
 
   // Sort albums
   const sortedAlbums = [...albums].sort((a, b) => {
@@ -226,7 +219,6 @@ const MemoryAlbums = () => {
                 date={formatDate(album.createdAt)}
                 thumbnail={album.url}
                 isBlurred={blurFaces}
-                apiURL={apiURL}
                 onClick={() => navigate(`/albums/${album._id}`)}
                 onDelete={handleDeleteAlbum}
                 onEdit={handleEditAlbum}
